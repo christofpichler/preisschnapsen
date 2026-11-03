@@ -21,7 +21,7 @@ h1,h2,h3{font-family:var(--head);font-weight:700;margin:0}
 /* Hearts */
 .hearts{display:inline-flex;align-items:center;gap:.08em;white-space:nowrap}
 .hearts .heart{width:1em;height:1em}
-.hearts .heart.lost{color:#8c8068;opacity:.9}
+.hearts .heart.lost{opacity:1}
 .hearts .heart.none{color:#8c8068;opacity:.3}
 .hearts .nkgap{width:.3em}
 .hearts .heart.nk.full{filter:drop-shadow(0 0 .08em #ffd36a)}

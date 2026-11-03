@@ -90,26 +90,32 @@
       const T = tiles.length;
       const cols = bestCols(T), rows = Math.ceil(T / cols);
       const sc = (...ns) => '--s:' + Math.max(0.6, Math.min(1, 13 / Math.max(...ns.map(n => n.length)))).toFixed(2);
+      // Playing-card style: one suit per corner, table number in a medallion.
+      const corners = '<span class="cn tl">' + ic('eichel') + '</span><span class="cn tr">' + ic('gras') + '</span>' +
+        '<span class="cn bl">' + ic('herz') + '</span><span class="cn br">' + ic('schelln') + '</span>';
+      const tone = n => ['t-eichel', 't-gras', 't-herz', 't-schelln'][((n || 1) - 1) % 4];
+      const medal = (label, cls) => '<div class="medal ' + cls + '"><b>' + label + '</b><small>' + (label === 'F' ? 'Freilos' : 'Tisch') + '</small></div>';
+      const dots = n => '<span class="bummerl" title="' + n + '. Bummerl">' + Array.from({ length: Math.min(3, n) }, () => ic('bummerl')).join('') + '</span>';
       const cards = tiles.map(pr => {
-        const suit = SUITS[((pr.table || 0) + 3) % 4];
-        const alt = ['', 'alt', 'alt2', 'alt3'][((pr.table || 0)) % 4];
         if (pr.bye) {
-          return '<div class="card bye" style="' + sc(name(pr.a)) + '"><div class="ci"><div class="idx alt2">F' + ic('schelln') + '</div><div class="pl"><span class="nmx">' + esc(name(pr.a)) +
-            '</span></div><div class="vs">Freilos \u2013 kampflos weiter</div></div></div>';
+          return '<div class="card bye" style="' + sc(name(pr.a)) + '">' + corners + medal('F', 't-schelln') +
+            '<div class="ci"><div class="pl"><span class="nmx">' + esc(name(pr.a)) + '</span></div>' +
+            '<div class="vs">kampflos weiter</div></div></div>';
         }
         const done = pr.winner != null;
         const line = (id) => {
           let h = '<span class="nmx">' + esc(name(id)) + '</span>';
-          if (done && id === pr.winner) h = '<span class="crown">\u2713</span>' + h;
+          if (done && id === pr.winner) h = '<span class="crown">✓</span>' + h;
           if (done && id !== pr.winner) {
             const c = P(id).cells.find(c => c.round === r.number);
-            h += '<span class="bummerl">' + ic('herz-leer', 'heart lost') + (c && c.loss_no ? c.loss_no : '') + '</span>';
+            if (c && c.loss_no) h += dots(c.loss_no);
           }
           return '<div class="pl ' + (done ? (id === pr.winner ? 'win' : 'lose') : '') + '">' + h + '</div>';
         };
         const sty = sc(name(pr.a), name(pr.b));
-        return '<div class="card ' + (done ? 'done' : 'open') + '" style="' + sty + '"><div class="ci"><div class="idx ' + alt + '">' + pr.table + ic(suit) + '</div>' +
-          line(pr.a) + '<div class="vs">gegen</div>' + line(pr.b) + '</div></div>';
+        return '<div class="card ' + (done ? 'done' : 'open') + '" style="' + sty + '">' + corners + medal(pr.table, tone(pr.table)) +
+          (done ? '' : '<span class="status">läuft</span>') +
+          '<div class="ci">' + line(pr.a) + '<div class="vs">gegen</div>' + line(pr.b) + '</div></div>';
       }).join('');
       return '<div class="tgrid" style="grid-template-columns:repeat(' + cols + ',1fr);grid-template-rows:repeat(' + rows + ',1fr)">' + cards + '</div>';
     }

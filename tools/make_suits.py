@@ -57,6 +57,18 @@ def herz_leer():
                 f'stroke-width="7" stroke-linejoin="round"/>')
 
 
+def bummerl():
+    """Lost game marker: black dot in the same heraldic style as the heart
+    (solid left half, hatched right half, ink outline)."""
+    c = '<circle cx="50" cy="52" r="34"/>'
+    return (clip("cl-bummerl", c),
+            f'<circle cx="50" cy="52" r="34" fill="{INK}"/>'
+            f'<g clip-path="url(#cl-bummerl)"><rect x="50" y="0" width="50" height="100" fill="#2b2b2b"/>'
+            f'{vlines(50, 100, 0, 100)}</g>'
+            f'<path d="M50 18 V86" stroke="{INK}" stroke-width="1.1"/>'
+            f'<circle cx="50" cy="52" r="34" fill="none" stroke="{INK}" stroke-width="{SW}"/>')
+
+
 def gras():
     leaf = ("M51 5 C60 16 88 34 91 56 C93 72 82 80 68 79 C61 78 56 75 52 71 "
             "C48 75 42 78 35 79 C21 80 9 71 11 56 C14 34 42 16 51 5 Z")
@@ -122,7 +134,7 @@ def schelln():
 
 def build():
     defs, syms = [], []
-    for name, fn in (("eichel", eichel), ("gras", gras), ("herz", herz), ("herz-leer", herz_leer), ("schelln", schelln)):
+    for name, fn in (("eichel", eichel), ("gras", gras), ("herz", herz), ("herz-leer", herz_leer), ("bummerl", bummerl), ("schelln", schelln)):
         d, body = fn()
         defs.append(d)
         syms.append(f'<symbol id="{name}" viewBox="0 0 100 100">{body}</symbol>')

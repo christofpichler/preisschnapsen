@@ -26,23 +26,31 @@ body.dash.idle{cursor:none}
 
 /* Tables */
 .tgrid{display:grid;height:100%;gap:18px}
-.card{container-type:size;position:relative;background:linear-gradient(#fffbec,#f6ecd0);color:var(--ink);border-radius:18px;border:4px solid #3b2a14;box-shadow:0 6px 0 #0006;overflow:hidden}
-.card .ci{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:4cqh 5cqw 4cqh 20cqw}
-.card .idx{position:absolute;left:5cqw;top:6cqh;width:13cqw;display:flex;flex-direction:column;align-items:center;font-family:var(--head);font-weight:800;font-size:min(20cqw,26cqh);line-height:.95;color:var(--red-d)}
-.card .idx .ic{font-size:min(11cqw,14cqh);margin-top:.15em}
-.card .idx.alt{color:#1f6a28}.card .idx.alt2{color:#a8730a}.card .idx.alt3{color:#6a431a}
+/* Table cards in playing-card style (sizes relative to the card via container units) */
+.card{container-type:size;position:relative;background:radial-gradient(120% 140% at 30% 20%,#fffdf3,#f4e8c8);color:var(--ink);border-radius:2.4cqmin;border:.9cqmin solid #3b2a14;box-shadow:0 6px 0 #0006;overflow:hidden}
+.card:before{content:"";position:absolute;inset:2.6cqmin;border:.45cqmin solid #3b2a1455;border-radius:1.6cqmin;pointer-events:none}
+.card:after{content:"";position:absolute;inset:3.8cqmin;border:.2cqmin solid #3b2a1430;border-radius:1.2cqmin;pointer-events:none}
+.card .cn{position:absolute;width:14cqmin;height:14cqmin;display:flex}
+.card .cn .ic{width:100%;height:100%}
+.card .cn.tl{left:6cqmin;top:6cqmin}.card .cn.tr{right:6cqmin;top:6cqmin}
+.card .cn.bl{left:6cqmin;bottom:6cqmin;transform:rotate(180deg)}.card .cn.br{right:6cqmin;bottom:6cqmin;transform:rotate(180deg)}
+.card .medal{position:absolute;left:9cqmin;top:50%;transform:translateY(-50%);width:42cqmin;height:42cqmin;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffaf0;border:1.1cqmin double currentColor;box-shadow:inset 0 0 0 .5cqmin #fffaf0,inset 0 0 0 .9cqmin currentColor;font-family:var(--head);line-height:.9;z-index:1}
+.card .medal b{font-size:22cqmin;font-weight:800}
+.card .medal small{font-size:5.4cqmin;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:.6cqmin;opacity:.85}
+.card .medal.t-eichel{color:#6a431a}.card .medal.t-gras{color:#2f6e25}.card .medal.t-herz{color:#b3261b}.card .medal.t-schelln{color:#a8730a}
+.card .ci{position:absolute;top:12cqmin;bottom:12cqmin;left:58cqmin;right:10cqmin;display:flex;flex-direction:column;justify-content:center;min-width:0}
 .card .nmx{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.card .pl{font-weight:700;font-size:calc(min(9.5cqw,17cqh) * var(--s,1));line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:.3em}
-.card .vs{font-size:min(5cqw,9cqh);color:var(--ink-2);line-height:1;padding:.1em 0;font-family:var(--head)}
-.card .pl .tag{margin-left:auto}
+.card .pl{font-weight:700;font-size:calc(15cqmin * var(--s,1));line-height:1.15;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:.3em}
+.card .vs{font-size:5.6cqmin;color:var(--ink-2);line-height:1;padding:.5cqmin 0 .5cqmin .2em;font-family:var(--head);letter-spacing:.06em}
+.card .status{position:absolute;top:7.5cqmin;right:25cqmin;font-weight:700;font-size:5.6cqmin;color:var(--gold-d);text-transform:uppercase;letter-spacing:.08em;background:#fff3cf;border:.35cqmin solid #e0a21b;border-radius:3cqmin;padding:.4cqmin 2cqmin}
+.card.open{border-color:#b98712;box-shadow:0 0 0 .6cqmin #e0a21b66,0 6px 0 #0006}
+.card.done{background:radial-gradient(120% 140% at 30% 20%,#f6fbef,#dcebc6)}
 .card.done .pl.lose{color:#8a7a60}
 .card.done .pl.win{color:var(--green-d)}
-.card.done{background:linear-gradient(#f0f8e6,#dcebc6)}
-.card.open{border-color:var(--gold);box-shadow:0 0 0 4px #e0a21b66,0 6px 0 #0006}
-.card.open .ci:after{content:"läuft";position:absolute;right:5cqw;top:4cqh;font-weight:700;font-size:min(5.5cqw,9cqh);color:var(--gold-d);text-transform:uppercase;letter-spacing:.05em}
-.card.bye{background:linear-gradient(#fff6d6,#f3df9a)}
-.card .bummerl{display:inline-flex;align-items:center;gap:.1em;color:var(--red-d);font-size:.8em;margin-left:auto}
+.card.bye{background:radial-gradient(120% 140% at 30% 20%,#fffbe6,#f3df9a)}
 .card .crown{color:var(--green);font-weight:800}
+.card .bummerl{display:inline-flex;align-items:center;gap:.14em;margin-left:auto;padding-left:.4em;flex:none}
+.card .bummerl .ic{width:.78em;height:.78em}
 
 /* Players */
 .pgrid{display:grid;height:100%;grid-auto-flow:column;gap:0 40px}
@@ -123,7 +131,7 @@ body.dash.idle{cursor:none}
 #adminlink[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){#anim .acard{animation:none;transform:none}}
 /* lives on a dark background: lost ones as light outline */
-body .prow .hearts .heart.lost{color:#e6dcbf;opacity:.6}
+body .prow .hearts .heart.lost{opacity:1;filter:drop-shadow(0 0 .05em #f3e6c4) drop-shadow(0 0 .02em #f3e6c4)}
 body .prow .hearts .heart.none{color:#e6dcbf;opacity:.2}
 /* more compact header on smaller screens */
 @media (max-width:1600px){.top{gap:18px;padding:12px 22px}.top h1{font-size:40px;max-width:34vw}.top .mid{gap:18px;font-size:26px}.top .rnd{font-size:40px;padding:2px 16px}.top .stat{font-size:24px}.top .right{gap:14px;font-size:22px}.top .clock{font-size:40px}#adminlink{font-size:18px;padding:6px 12px}}

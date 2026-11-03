@@ -9,7 +9,8 @@
     return '<svg class="ic ' + (cls || '') + '" aria-hidden="true"><use href="' + SVG + name + '"/></svg>';
   }
   function heartsHtml(h) {
-    const hz = s => s === 'full' ? 'herz' : 'herz-leer';  // lost or missing lives are drawn as outlines
+    // full: life left (red heart), lost: bummerl (black dot), none: rebuy lives not bought (outline)
+    const hz = s => s === 'full' ? 'herz' : s === 'lost' ? 'bummerl' : 'herz-leer';
     return '<span class="hearts" title="Leben">' + ic(hz(h[0]), 'heart ' + h[0]) + '<span class="nkgap"></span>' +
       ic(hz(h[1]), 'heart nk ' + h[1]) + ic(hz(h[2]), 'heart nk ' + h[2]) + '</span>';
   }
