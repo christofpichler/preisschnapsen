@@ -235,3 +235,31 @@ def test_manual_draw_via_api(client):
     assert r.status_code == 200
     dr = r.json()["state"]["derived"]["draft"]
     assert dr["mode"] == "manual" and sorted(p["table"] or 0 for p in dr["pairings"]) == [0, 1, 2]
+
+
+def test_remove_all_players(client):
+    A = lambda path, body=None, method="post": post(client, path, body, rid(), method)
+    for n in ["Anna", "Bert", "Cilli"]:
+        assert A("/admin/api/players", {"name": n}).status_code == 200
+    assert A("/admin/api/tournament/start").status_code == 200
+    assert A("/admin/api/rounds/draw").status_code == 200
+    assert A("/admin/api/rounds/publish").status_code == 200
+    # confirmation is mandatory
+    assert A("/admin/api/players/remove-all", {}).status_code == 422
+    r = A("/admin/api/players/remove-all", {"confirm": True})
+    assert r.status_code == 200 and r.json()["removed"] == 3
+    st = r.json()["state"]
+    assert st["derived"]["players"] == [] and st["derived"]["rounds"] == [] and st["derived"]["draft"] is None
+    assert st["tournament"]["status"] == "signup"
+    # numbering starts again at 1
+    r = A("/admin/api/players", {"name": "Dora"})
+    assert [p["number"] for p in r.json()["state"]["derived"]["players"]] == [1]
+    # undo twice: first the new player, then the removal
+    A("/admin/api/undo")
+    r = A("/admin/api/undo")
+    d = r.json()["state"]["derived"]
+    assert len(d["players"]) == 3 and len(d["rounds"]) == 1
+    # the user role cannot use it
+    h = dict(DASH)
+    h.update({"Content-Type": "application/json", "X-Schnapsen": "1"})
+    assert client.post("/admin/api/players/remove-all", content=json.dumps({"confirm": True}), headers=h).status_code == 403

@@ -456,6 +456,22 @@ class Service:
 
         self._mut("Spieler löschen", fn)
 
+    def remove_all_players(self) -> int:
+        """Delete every player of the active tournament together with its rounds,
+        pairings and placement orders. Settings are kept, status returns to signup.
+        Undoable via the regular undo snapshot."""
+        def fn(tid: int) -> int:
+            n = self.db.execute("SELECT COUNT(*) c FROM players WHERE tournament_id=?", (tid,)).fetchone()["c"]
+            self.db.execute("DELETE FROM pairings WHERE round_id IN (SELECT id FROM rounds WHERE tournament_id=?)", (tid,))
+            self.db.execute("DELETE FROM rounds WHERE tournament_id=?", (tid,))
+            self.db.execute("DELETE FROM placement_order WHERE tournament_id=?", (tid,))
+            self.db.execute("DELETE FROM players WHERE tournament_id=?", (tid,))
+            self.db.execute("UPDATE tournaments SET status='signup' WHERE id=?", (tid,))
+            self._log(tid, f"Alle Spieler entfernt ({n})")
+            return n
+
+        return self._mut("Alle Spieler entfernen", fn)
+
     def withdraw_player(self, pid: int) -> None:
         def fn(tid: int) -> None:
             row = self._player(tid, pid)

@@ -198,6 +198,12 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
     def r_player_add(request: Request, p: dict = B, _: str = W):
         return do(request, lambda: svc.add_player(p))
 
+    @app.post("/admin/api/players/remove-all")
+    def r_players_remove_all(request: Request, p: dict = B, _: str = W):
+        if p.get("confirm") is not True:
+            raise ApiError("Bestätigung fehlt.", 422)
+        return do(request, lambda: {"removed": svc.remove_all_players()})
+
     @app.patch("/admin/api/players/{pid}")
     def r_player_upd(pid: int, request: Request, p: dict = B, _: str = W):
         return do(request, lambda: svc.update_player(pid, p))

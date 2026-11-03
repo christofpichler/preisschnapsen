@@ -150,7 +150,7 @@
   function renderPlayers(v) {
     if (!$('#p-list')) {
       v.innerHTML = '<div id="p-head"></div><div class="card"><div class="add"><input id="p-name" type="text" data-keep="ok" placeholder="Name eintippen und Enter …" autocomplete="off" autocapitalize="words" enterkeyhint="done"><label class="sw"><input type="checkbox" id="p-ng" ' + (ui.addNg ? 'checked' : '') + '><i></i>NG bezahlt</label><button class="btn" data-act="p-add">Hinzufügen</button></div></div>' +
-        '<div class="card"><div class="row" style="margin-bottom:8px" id="p-chips"></div><input id="p-search" type="search" data-keep="ok" placeholder="Suchen …" autocomplete="off"></div><div class="card plist" id="p-list"></div>';
+        '<div class="card"><div class="row" style="margin-bottom:8px" id="p-chips"></div><input id="p-search" type="search" data-keep="ok" placeholder="Suchen …" autocomplete="off"></div><div class="card plist" id="p-list"></div><div id="p-foot"></div>';
       $('#p-search').value = ui.search;
     }
     const pl = D.players;
@@ -160,6 +160,7 @@
     else if (D.phase === 'finished') head = '<div class="banner">Turnier beendet. Neue Spieler können nicht mehr angelegt werden.</div>';
     else head = '<div class="banner">Das Turnier läuft: Neu angelegte Spieler steigen ab der nächsten Runde ein (Bestätigung nötig).</div>';
     $('#p-head').innerHTML = head + (D.warnings.length ? warnBanner() : '');
+    $('#p-foot').innerHTML = pl.length ? '<div class="card row sp"><div class="muted small">Entfernt alle Spieler' + (D.rounds.length || D.draft ? ' samt allen Runden und Ergebnissen' : '') + '. Die Turnier-Einstellungen bleiben. Mit „Rückgängig“ wiederherstellbar.</div><button class="btn sec red" data-act="p-remove-all">Alle Spieler entfernen …</button></div>' : '';
     const flt = [['all', 'Alle (' + pl.length + ')'], ['alive', 'Im Spiel (' + alive + ')'], ['nk', 'NK offen (' + D.counts.nk_open + ')'], ['out', 'Ausgeschieden (' + (pl.length - alive) + ')']];
     $('#p-chips').innerHTML = flt.map(([k, l]) => '<button class="chip ' + (ui.filter === k ? 'on' : '') + '" data-act="p-filter" data-f="' + k + '">' + l + '</button>').join('');
     const dup = {}; pl.forEach(p => { const k = p.name.toLowerCase(); dup[k] = (dup[k] || 0) + 1; });
@@ -495,6 +496,12 @@
       if (!(await confirmBox('Turnier löschen?', '„' + x.name + '“ mit allen Daten löschen?', 'Weiter', true))) return;
       if (!(await confirmBox('Wirklich endgültig löschen?', 'Das kann nicht rückgängig gemacht werden (auch nicht mit „Rückgängig“).', 'Ja, endgültig löschen', true))) return;
       await act(() => api('DELETE', 'tournaments/' + x.id, { confirm: true }), 'Gelöscht');
+    },
+    'p-remove-all': async () => {
+      const n = D.players.length, withRounds = D.rounds.length > 0 || !!D.draft;
+      if (!(await confirmBox('Alle Spieler entfernen?', n + ' Spieler werden gelöscht' + (withRounds ? ', dazu alle Runden und Ergebnisse' : '') + '.', 'Weiter', true))) return;
+      if (!(await confirmBox('Wirklich alle entfernen?', 'Bitte noch einmal bestätigen.', 'Ja, alle entfernen', true))) return;
+      await act(() => api('POST', 'players/remove-all', { confirm: true }), 'Alle Spieler entfernt');
     },
     't-reset': async () => {
       if (!(await confirmBox('Turnier zurücksetzen?', 'Alle Runden und Ergebnisse werden gelöscht.', 'Weiter', true))) return;
