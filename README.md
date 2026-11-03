@@ -14,7 +14,7 @@ The user interface is in German. The code, the command line and this documentati
 
 ## Features
 
-* Admin area for touch devices and desktops: quick player entry, removal of all players (undoable), digital or manual draw (real pot of paper tickets), one-tap result entry, rebuy dialog, corrections of past rounds with warnings, placement games, cash overview, undo, CSV export, print view (A4 landscape), JSON backup and import.
+* Admin area for touch devices and desktops: quick player entry, digital or manual draw (real pot of paper tickets), one-tap result entry, rebuy dialog, corrections of past rounds with warnings, placement games, cash overview, tournament reset and removal of all players, undo, CSV export, print view (A4 landscape), JSON backup and import.
 * Live dashboard for a large display: tables of the current round, players with lives as hearts, a matrix like the paper list, ranking, optional cash view and award ceremony. Views rotate automatically or can be pinned.
 * Live updates via Server-Sent Events with polling fallback and automatic reconnect. Several admin devices stay in sync.
 * Derived state: lives, status and ranking are never stored as counters but always recomputed from results and rebuys, so corrections of old rounds stay consistent.
