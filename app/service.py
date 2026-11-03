@@ -101,6 +101,7 @@ class Service:
         self.db.execute("PRAGMA synchronous=NORMAL")
         self.db.executescript(SCHEMA)
         self.version = int(time.time()) * 1000
+        self.anim_event = 0  # bumped by the admin to replay the draw animation on dashboards
         with self.lock:
             if not self.db.execute("SELECT 1 FROM tournaments LIMIT 1").fetchone():
                 self._create_tournament_row({"name": "Preisschnapsen", "date": datetime.now().strftime("%Y-%m-%d")},
@@ -204,11 +205,18 @@ class Service:
             return {**base, "tournament": raw["tournament"], "derived": d, "audit": audit,
                     "undo": {"available": bool(u), "label": u["label"] if u else ""}}
 
+    def trigger_animation(self) -> int:
+        """Ask all dashboards to play the draw animation once (not persisted, no undo)."""
+        with self.lock:
+            self.anim_event += 1
+            self.version += 1
+            return self.anim_event
+
     def public_state(self) -> Dict[str, Any]:
         """Reduced view for the dashboard."""
         with self.lock:
             tid = self.active_tid()
-            base = {"version": self.version, "server_time": now_iso()}
+            base = {"version": self.version, "server_time": now_iso(), "anim_event": self.anim_event}
             if tid is None:
                 return {**base, "tournament": None}
             raw = self.load_raw(tid)

@@ -284,3 +284,14 @@ def test_dashboard_contains_card_pool(client):
     assert all(c.startswith("/static/img/cards/") and "?v=" in c for c in cards)
     for c in cards:
         assert client.get(c).status_code == 200
+
+
+def test_replay_animation(client):
+    before = client.get("/dashboard/api/state", headers=DASH).json()["anim_event"]
+    r = post(client, "/admin/api/dashboard/animate", {}, rid())
+    assert r.status_code == 200 and r.json()["anim_event"] == before + 1
+    st = client.get("/dashboard/api/state", headers=DASH).json()
+    assert st["anim_event"] == before + 1
+    h = dict(DASH)
+    h.update({"Content-Type": "application/json", "X-Schnapsen": "1"})
+    assert client.post("/admin/api/dashboard/animate", content="{}", headers=h).status_code == 403

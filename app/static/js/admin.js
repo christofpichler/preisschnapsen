@@ -512,6 +512,7 @@
       if (!(await confirmBox('Wirklich zurücksetzen?', 'Bitte noch einmal bestätigen. Spieler bleiben angelegt.', 'Ja, zurücksetzen', true))) return;
       await act(() => api('POST', 'tournament/reset', { confirm: true }), 'Zurückgesetzt');
     },
+    'anim': async () => { await act(() => api('POST', 'dashboard/animate'), 'Animation gestartet'); },
     'audit': () => { ui.showAudit = !ui.showAudit; renderView(); },
     'r-sel': el => { ui.roundSel = el.dataset.r === 'draft' ? 'draft' : +el.dataset.r; renderView(); },
     'nk-dialog': () => nkDialog(),

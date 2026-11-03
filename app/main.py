@@ -347,6 +347,10 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
             raise ApiError("Bestätigung fehlt.", 422)
         return do(request, lambda: svc.delete_tournament(tid))
 
+    @app.post("/admin/api/dashboard/animate")
+    def r_dashboard_animate(request: Request, p: dict = B, _: str = W):
+        return do(request, lambda: {"anim_event": svc.trigger_animation()})
+
     @app.patch("/admin/api/dashboard")
     def r_dashboard(request: Request, p: dict = B, _: str = W):
         return do(request, lambda: svc.update_dashboard(p))

@@ -7,7 +7,9 @@ button{font-family:inherit;touch-action:manipulation}
 .tname{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;min-width:0}
 .tname #a-name{font-family:var(--head);font-weight:800;font-size:1.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48vw}
 .pill{background:#0a2619;border:2px solid #e5c871;color:#ffe9a6;border-radius:2rem;padding:.2rem .8rem;font-weight:600;font-size:.9rem}
-.top-right{display:flex;align-items:center;gap:12px}
+.top-right{display:flex;align-items:center;gap:10px;flex:none}
+.top-right .chip,.top-right .btn-undo{white-space:nowrap}
+@media(max-width:1100px){.top-right .sync{font-size:0;width:14px;text-align:center}.top-right .sync:first-letter{font-size:.9rem}.top-right .chip{padding:0 .8rem}}
 .sync{font-size:.8rem;color:#9fe0aa}.sync.bad{color:#ff9aa2;font-weight:700}
 .btn-undo{min-height:48px;padding:0 1rem;font:700 1rem var(--body);border-radius:.7rem;border:2px solid #e5c871;background:transparent;color:#ffe9a6;cursor:pointer}
 .btn-undo:disabled{opacity:.35}

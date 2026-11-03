@@ -331,7 +331,7 @@
     const key = drawKey();
     if (key && key !== baseline) {
       baseline = key;
-      if (S.tournament.dashboard.animation && S.phase === 'running' && !FORCE) { animate(S.draw_event.round); return; }
+      if (S.tournament.dashboard.animation && S.phase === 'running' && !FORCE) { animate('Runde ' + S.draw_event.round + ' wird ausgelost'); return; }
       forceTables = true;
     }
   }
@@ -348,15 +348,15 @@
     return k.indexOf('/') >= 0 ? '<img src="' + esc(k) + '" alt="" draggable="false">'
       : '<svg viewBox="0 0 200 340" preserveAspectRatio="none" aria-hidden="true"><use href="#karte-' + k + '"/></svg>';
   }
-  function animate(round) {
+  function animate(title) {
     const a = $('anim');
     const r = currentRound();
     const tables = r ? r.pairings.filter(p => !p.bye).length : 0;
-    a.innerHTML = '<h2>Runde ' + round + ' wird ausgelost</h2><div class="deck">' +
+    a.innerHTML = '<h2>' + esc(title) + '</h2><div class="deck">' +
       (CARD_POOL.length ? pickCards() : ['herz', 'schelln', 'gras', 'eichel']).map(k => '<div class="acard"><div class="inner">' +
         '<div class="face front">' + cardFront(k) + '</div>' +
         '<div class="face back"><svg viewBox="0 0 200 345" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
-      '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + (tables === 1 ? ' Tisch' : ' Tische') + '</h2>';
+      (tables ? '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + (tables === 1 ? ' Tisch' : ' Tische') + '</h2>' : '');
     a.classList.add('show');
     forceTables = true;
     setTimeout(() => { a.classList.remove('show'); forceTables = true; show(); }, 3800);
@@ -366,8 +366,14 @@
   function onState(s) {
     const first = !S;
     if (!first && s.version === S.version && s.role === S.role) return;   // identical state: nothing to do
+    const replay = !first && s.anim_event !== S.anim_event;   // admin pressed "Animation"
     S = s;
     if (first) baseline = drawKey(); else maybeAnimate();
+    if (replay && S.tournament && !FORCE && !$('anim').classList.contains('show')) {
+      const r = currentRound();
+      animate(r ? 'Runde ' + r.number : (S.tournament.name || 'Auslosung'));
+      return;
+    }
     if (!$('anim').classList.contains('show')) show();
   }
   live('api/', onState, ok => $('conn').classList.toggle('show', !ok), 3000);
