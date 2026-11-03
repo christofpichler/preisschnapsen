@@ -2,7 +2,7 @@ html{font-size:20px}
 body.adm{background:var(--paper);min-height:100vh;padding-bottom:env(safe-area-inset-bottom);-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 button{font-family:inherit;touch-action:manipulation}
 #top{position:sticky;top:0;z-index:40;background:var(--felt);color:#fff8e4;padding-top:env(safe-area-inset-top)}
-.rauten-strip{height:10px;background:#fff url(../img/rauten.svg) repeat-x 0 0/20px 20px}
+.rail{height:10px;background:linear-gradient(#e6c46a 0 2px,#4a3216 2px 4px,#2f1f0c 4px 8px,#c9a24a 8px 10px)}
 .top-in{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 16px}
 .tname{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;min-width:0}
 .tname #a-name{font-family:var(--head);font-weight:800;font-size:1.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48vw}

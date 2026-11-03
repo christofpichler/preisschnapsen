@@ -16,7 +16,6 @@ html,body{margin:0;padding:0}
 body{font-family:var(--body);color:var(--ink);background:var(--paper);-webkit-text-size-adjust:100%}
 h1,h2,h3{font-family:var(--head);font-weight:700;margin:0}
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;flex:none}
-.rauten{background:#fff url(../img/rauten.svg) repeat-x 0 0/24px 24px}
 
 /* Hearts */
 .hearts{display:inline-flex;align-items:center;gap:.08em;white-space:nowrap}

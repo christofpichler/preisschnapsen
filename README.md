@@ -15,7 +15,7 @@ The user interface is in German. The code, the command line and this documentati
 ## Features
 
 * Admin area for touch devices and desktops: quick player entry, digital or manual draw (real pot of paper tickets), one-tap result entry, rebuy dialog, corrections of past rounds with warnings, placement games, cash overview, tournament reset and removal of all players, undo, CSV export, print view (A4 landscape), JSON backup and import.
-* Live dashboard for a large display: tables of the current round, players with lives as hearts, a matrix like the paper list, ranking, optional cash view and award ceremony. Views rotate automatically or can be pinned.
+* Live dashboard for a large display: draw animation with four illustrated cards (one per suit and season), tables of the current round, players with lives as hearts, a matrix like the paper list, ranking, optional cash view and award ceremony. Views rotate automatically or can be pinned.
 * Live updates via Server-Sent Events with polling fallback and automatic reconnect. Several admin devices stay in sync.
 * Derived state: lives, status and ranking are never stored as counters but always recomputed from results and rebuys, so corrections of old rounds stay consistent.
 * Idempotent write requests (`X-Request-Id`), serialised writes, SQLite in WAL mode, automatic database backup after every closed round, 50 undo steps.
@@ -176,7 +176,7 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt pytest httpx
 python -m pytest                 # unit, API and simulation tests
 python -m app.cli simulate       # simulated tournaments with invariant checks
-python tools/make_suits.py       # regenerate app/static/img/suits.svg and app/static/js/suits.js
+python tools/make_suits.py       # regenerate the sprite (suit symbols and the cards from tools/make_cards.py)
 ```
 
 Run a development server:
@@ -202,7 +202,7 @@ app/exports.py     CSV export and print view
 app/cli.py         command line interface
 app/simtools.py    demo and simulation helpers
 app/static/        HTML, CSS, JS, fonts, SVG
-tools/             make_suits.py (suit symbol generator)
+tools/             make_suits.py (sprite generator), make_cards.py (card artwork for the draw animation)
 tests/             pytest suite
 deploy/            systemd unit, Caddyfile example
 docs/screenshots/  images used by this README

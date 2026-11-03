@@ -340,7 +340,9 @@
     const r = currentRound();
     const tables = r ? r.pairings.filter(p => !p.bye).length : 0;
     a.innerHTML = '<h2>Runde ' + round + ' wird ausgelost</h2><div class="deck">' +
-      [0, 1, 2, 3].map(i => '<div class="acard">' + ic(SUITS[i], '') + '</div>').join('') + '</div>' +
+      ['herz', 'schelln', 'gras', 'eichel'].map(k => '<div class="acard"><div class="inner">' +
+        '<div class="face front"><svg viewBox="0 0 200 340" aria-hidden="true"><use href="#karte-' + k + '"/></svg></div>' +
+        '<div class="face back"><svg viewBox="0 0 200 340" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
       '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + ' Tische</h2>';
     a.classList.add('show');
     forceTables = true;

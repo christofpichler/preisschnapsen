@@ -7,7 +7,11 @@ Original artwork: left half flat, right half hatched. Output:
                               clipPath references work in all browsers (including Safari).
 Usage: python3 tools/make_suits.py
 """
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import make_cards  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 INK = "#141414"
@@ -138,6 +142,9 @@ def build():
         d, body = fn()
         defs.append(d)
         syms.append(f'<symbol id="{name}" viewBox="0 0 100 100">{body}</symbol>')
+    card_defs, card_syms = make_cards.build()
+    defs.append(card_defs)
+    syms.append(card_syms)
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" '
             'style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">'
             f'<defs>{"".join(defs)}</defs>{"".join(syms)}</svg>')
