@@ -222,6 +222,6 @@ install.sh         installer / updater
 
 ## License
 
-License: not yet specified.
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Christof Pichler.
 
 The fonts in `app/static/fonts` (Alegreya SC and Source Sans 3) are licensed under the SIL Open Font License; the license texts are in the same directory.
