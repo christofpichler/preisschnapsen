@@ -122,10 +122,11 @@ body.dash.idle{cursor:none}
 #anim .deck{display:flex;gap:40px;perspective:1200px}
 /* Outer element: slide in and shadow. Inner element: 3D flip from back to front.
    Kept separate because filter/opacity would flatten the 3D context and hide the back face. */
-#anim .acard{position:relative;width:min(230px,19vw);aspect-ratio:200/340;perspective:1200px;opacity:0;transform:translateY(90px);animation:dealin .5s ease-out forwards;filter:drop-shadow(0 10px 14px #0008)}
+#anim .acard{position:relative;width:min(240px,19vw);aspect-ratio:58/100;perspective:1200px;opacity:0;transform:translateY(90px);animation:dealin .5s ease-out forwards;filter:drop-shadow(0 10px 14px #0008)}
 #anim .acard .inner{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(180deg);animation:flip .9s ease-in-out .45s forwards}
 #anim .acard .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 #anim .acard .face svg{display:block;width:100%;height:100%}
+#anim .acard .face img{display:block;width:100%;height:100%;object-fit:cover;border-radius:5%/2.9%;box-shadow:0 0 0 1px #0004}
 #anim .acard .back{transform:rotateY(180deg)}
 #anim .acard:nth-child(2){animation-delay:.3s}#anim .acard:nth-child(2) .inner{animation-delay:.75s}
 #anim .acard:nth-child(3){animation-delay:.6s}#anim .acard:nth-child(3) .inner{animation-delay:1.05s}

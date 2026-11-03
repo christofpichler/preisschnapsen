@@ -38,12 +38,27 @@ def asset_version(static_dir: str = STATIC_DIR) -> str:
     return h.hexdigest()[:12]
 
 
+CARD_EXT = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def card_images(version: str) -> list:
+    """Versioned URLs of all images in static/img/cards (pool for the draw animation)."""
+    d = os.path.join(STATIC_DIR, "img", "cards")
+    if not os.path.isdir(d):
+        return []
+    return [f"/static/img/cards/{n}?v={version}" for n in sorted(os.listdir(d)) if n.lower().endswith(CARD_EXT)]
+
+
 def versioned_page(name: str, version: str) -> str:
     """HTML page with ?v=<version> appended to every /static/ asset URL, so browsers
     and caching proxies (e.g. Cloudflare) fetch new CSS/JS after an update."""
     with open(os.path.join(STATIC_DIR, name), encoding="utf-8") as fh:
         html = fh.read()
-    return _ASSET_RE.sub(lambda mo: f"{mo.group(1)}{mo.group(2)}?v={version}{mo.group(3)}", html)
+    html = _ASSET_RE.sub(lambda mo: f"{mo.group(1)}{mo.group(2)}?v={version}{mo.group(3)}", html)
+    # card pool for the draw animation; "</" is escaped so the JSON cannot end the script element
+    cards = json.dumps(card_images(version)).replace("</", "<\\/")
+    return html.replace('<script id="cards-data" type="application/json">[]</script>',
+                        f'<script id="cards-data" type="application/json">{cards}</script>')
 IDEM_TTL = 600
 
 NO_ACCESS_HTML = """<!doctype html><html lang="de"><head><meta charset="utf-8">

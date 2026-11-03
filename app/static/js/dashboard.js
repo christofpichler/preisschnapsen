@@ -335,15 +335,28 @@
       forceTables = true;
     }
   }
+  // Card pool: scans from static/img/cards (preloaded); drawn SVG cards when the pool is empty.
+  let CARD_POOL = [];
+  try { CARD_POOL = JSON.parse(($('cards-data') || {}).textContent || '[]'); } catch (e) { CARD_POOL = []; }
+  CARD_POOL.forEach(src => { const im = new Image(); im.src = src; });
+  function pickCards() {
+    const pool = CARD_POOL.slice();
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    return pool.slice(0, 4);
+  }
+  function cardFront(k) {
+    return k.indexOf('/') >= 0 ? '<img src="' + esc(k) + '" alt="" draggable="false">'
+      : '<svg viewBox="0 0 200 340" preserveAspectRatio="none" aria-hidden="true"><use href="#karte-' + k + '"/></svg>';
+  }
   function animate(round) {
     const a = $('anim');
     const r = currentRound();
     const tables = r ? r.pairings.filter(p => !p.bye).length : 0;
     a.innerHTML = '<h2>Runde ' + round + ' wird ausgelost</h2><div class="deck">' +
-      ['herz', 'schelln', 'gras', 'eichel'].map(k => '<div class="acard"><div class="inner">' +
-        '<div class="face front"><svg viewBox="0 0 200 340" aria-hidden="true"><use href="#karte-' + k + '"/></svg></div>' +
-        '<div class="face back"><svg viewBox="0 0 200 340" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
-      '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + ' Tische</h2>';
+      (CARD_POOL.length ? pickCards() : ['herz', 'schelln', 'gras', 'eichel']).map(k => '<div class="acard"><div class="inner">' +
+        '<div class="face front">' + cardFront(k) + '</div>' +
+        '<div class="face back"><svg viewBox="0 0 200 340" preserveAspectRatio="none" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
+      '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + (tables === 1 ? ' Tisch' : ' Tische') + '</h2>';
     a.classList.add('show');
     forceTables = true;
     setTimeout(() => { a.classList.remove('show'); forceTables = true; show(); }, 3800);

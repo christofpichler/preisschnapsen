@@ -220,6 +220,12 @@ install.sh         installer / updater
 * Single process only (see Development).
 * The user interface is German only.
 
+## Card images
+
+The draw animation deals four random cards from `app/static/img/cards/`. The bundled images are scans of a late 19th century Doppeldeutsche (Tell pattern) pack by Ferd. Piatnik & Söhne, Vienna, with the Austro-Hungarian card tax stamp; the artwork is in the public domain. Scans courtesy of the playing card collection at [endebrock.de](http://www.endebrock.de/).
+
+To add cards, put scans through `tools/prepare_cards.py` (neutralises the paper tone, crops strips of several cards with `--strip N --names ...`, scales and compresses). Every JPEG/PNG/WebP in the folder is picked up at server start. Without images the animation uses the drawn cards from `tools/make_cards.py`.
+
 ## License
 
 Released under the [MIT License](LICENSE). Copyright (c) 2026 Christof Pichler.

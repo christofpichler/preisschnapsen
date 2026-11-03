@@ -274,3 +274,13 @@ def test_pages_reference_versioned_assets(client):
     assert r.status_code == 200 and "immutable" in r.headers["cache-control"]
     assert client.get("/static/css/app.css").headers["cache-control"] == "no-cache"
     assert client.get("/dashboard/", headers=DASH).headers["cache-control"] == "no-store"
+
+
+def test_dashboard_contains_card_pool(client):
+    html = client.get("/dashboard/", headers=DASH).text
+    raw = html.split('<script id="cards-data" type="application/json">')[1].split("</script>")[0]
+    cards = json.loads(raw)
+    assert isinstance(cards, list)
+    assert all(c.startswith("/static/img/cards/") and "?v=" in c for c in cards)
+    for c in cards:
+        assert client.get(c).status_code == 200
