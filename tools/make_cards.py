@@ -173,19 +173,43 @@ def card(suit):
     return defs, f'<symbol id="karte-{suit}" viewBox="0 0 {W} {H}">{body}</symbol>'
 
 
+def _rosette(cx, cy, r, petal, centre):
+    """Four-petal rosette with a centre dot."""
+    petals = "".join(
+        f'<ellipse cx="{cx}" cy="{cy - r * .55:.2f}" rx="{r * .32:.2f}" ry="{r * .55:.2f}" '
+        f'transform="rotate({a} {cx} {cy})" fill="{petal}"/>' for a in (0, 90, 180, 270))
+    return petals + f'<circle cx="{cx}" cy="{cy}" r="{r * .26:.2f}" fill="{centre}"/>'
+
+
 def card_back():
-    """Back side: dark red field with a fine lattice, gold frame and the four suits in a medallion."""
-    lattice = "".join(f'<path d="M{x} 0 L{x + H} {H} M{x} {H} L{x + H} 0" stroke="#b8473b" stroke-width="1.2"/>'
-                      for x in range(-H, W + 1, 14))
-    suits = "".join(f'<use href="#{n}" x="{x}" y="{y}" width="26" height="26"/>'
-                    for n, x, y in (("eichel", 73, MID - 30), ("gras", 101, MID - 30), ("herz", 73, MID + 2), ("schelln", 101, MID + 2)))
-    body = (f'<rect x="2" y="2" width="{W - 4}" height="{H - 4}" rx="14" fill="{WHITE}" stroke="{INK}" stroke-width="2.5"/>'
-            f'<clipPath id="cl-back"><rect x="12" y="12" width="176" height="{H - 24}" rx="8"/></clipPath>'
-            f'<g clip-path="url(#cl-back)"><rect x="0" y="0" width="{W}" height="{H}" fill="#8e2a22"/>{lattice}</g>'
-            f'<rect x="12" y="12" width="176" height="{H - 24}" rx="8" fill="none" stroke="{GOLD}" stroke-width="2.4"/>'
-            f'<rect x="18" y="18" width="164" height="{H - 36}" rx="6" fill="none" stroke="{GOLD}" stroke-opacity=".6" stroke-width="1"/>'
-            f'<ellipse cx="100" cy="{MID}" rx="42" ry="50" fill="{WHITE}" stroke="{GOLD}" stroke-width="3"/>' + suits)
-    return f'<symbol id="karte-rueckseite" viewBox="0 0 {W} {H}">{body}</symbol>'
+    """Back side in the style of 19th century packs: warm paper, black frame, fine
+    lattice with rosettes in red and blue, central cartouche. Aspect ratio matches
+    the scanned fronts (0.58)."""
+    bw, bh = 200, 345
+    paper, red, blue, ink = "#faf6ec", "#9b2b22", "#2f4f7f", "#222222"
+    cell = 16
+    pattern = (f'<pattern id="back-pat" width="{cell}" height="{cell}" patternUnits="userSpaceOnUse">'
+               f'<rect width="{cell}" height="{cell}" fill="{paper}"/>'
+               f'<path d="M0 0 L{cell} {cell} M{cell} 0 L0 {cell}" stroke="{red}" stroke-width=".7" stroke-opacity=".75"/>'
+               + _rosette(cell / 2, cell / 2, 4.6, red, blue)
+               + "".join(f'<circle cx="{x}" cy="{y}" r="1.1" fill="{blue}"/>' for x, y in ((0, 0), (cell, 0), (0, cell), (cell, cell)))
+               + '</pattern>')
+    cx, cy = bw / 2, bh / 2
+    big = "".join(
+        f'<ellipse cx="{cx}" cy="{cy - 15}" rx="6.5" ry="15" transform="rotate({a} {cx} {cy})" '
+        f'fill="{red if a % 90 == 0 else blue}" stroke="{ink}" stroke-width=".6"/>' for a in range(0, 360, 45))
+    body = (f'<rect x="1.5" y="1.5" width="{bw - 3}" height="{bh - 3}" rx="12" fill="{paper}" stroke="#00000022" stroke-width="1"/>'
+            f'<rect x="10" y="10" width="{bw - 20}" height="{bh - 20}" rx="7" fill="none" stroke="{ink}" stroke-width="1.4"/>'
+            f'<rect x="16" y="16" width="{bw - 32}" height="{bh - 32}" rx="3" fill="url(#back-pat)" stroke="{red}" stroke-width="1.2"/>'
+            f'<rect x="19" y="19" width="{bw - 38}" height="{bh - 38}" rx="2" fill="none" stroke="{red}" stroke-width=".5"/>'
+            f'<ellipse cx="{cx}" cy="{cy}" rx="46" ry="60" fill="{paper}" stroke="{red}" stroke-width="2.2"/>'
+            f'<ellipse cx="{cx}" cy="{cy}" rx="41" ry="55" fill="none" stroke="{blue}" stroke-width=".9"/>'
+            + big +
+            f'<circle cx="{cx}" cy="{cy}" r="7" fill="{paper}" stroke="{ink}" stroke-width=".8"/>'
+            + _rosette(cx, cy, 6, red, blue)
+            + "".join(_rosette(cx, cy + dy, 4, blue, red) for dy in (-44, 44))
+            + "".join(_rosette(cx + dx, cy, 3.4, blue, red) for dx in (-31, 31)))
+    return pattern, f'<symbol id="karte-rueckseite" viewBox="0 0 {bw} {bh}">{body}</symbol>'
 
 
 def build():
@@ -195,5 +219,7 @@ def build():
         d, s = card(suit)
         defs.append(d)
         syms.append(s)
-    syms.append(card_back())
+    back_defs, back = card_back()
+    defs.append(back_defs)
+    syms.append(back)
     return "".join(defs), "".join(syms)

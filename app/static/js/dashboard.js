@@ -355,7 +355,7 @@
     a.innerHTML = '<h2>Runde ' + round + ' wird ausgelost</h2><div class="deck">' +
       (CARD_POOL.length ? pickCards() : ['herz', 'schelln', 'gras', 'eichel']).map(k => '<div class="acard"><div class="inner">' +
         '<div class="face front">' + cardFront(k) + '</div>' +
-        '<div class="face back"><svg viewBox="0 0 200 340" preserveAspectRatio="none" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
+        '<div class="face back"><svg viewBox="0 0 200 345" aria-hidden="true"><use href="#karte-rueckseite"/></svg></div></div></div>').join('') + '</div>' +
       '<h2 style="font-size:56px;margin-top:40px;color:#cfe8d5">' + tables + (tables === 1 ? ' Tisch' : ' Tische') + '</h2>';
     a.classList.add('show');
     forceTables = true;
