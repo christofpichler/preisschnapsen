@@ -17,7 +17,8 @@ button{font-family:inherit;touch-action:manipulation}
 #tabs button{flex:1 0 auto;min-height:52px;padding:0 1.1rem;border:none;border-radius:.8rem .8rem 0 0;background:#1c5a3d;color:#e9f3ea;font:700 1.05rem var(--body);cursor:pointer;position:relative;white-space:nowrap}
 #tabs button.on{background:var(--paper);color:var(--ink)}
 #tabs .badge{display:inline-block;min-width:1.4em;padding:0 .35em;margin-left:.4em;border-radius:1em;background:var(--red);color:#fff;font-size:.8rem;line-height:1.5}
-#view{padding:14px 16px 90px;max-width:1300px;margin:0 auto}
+#view{padding:14px 16px 24px;max-width:1300px;margin:0 auto}
+.adm-foot{max-width:1300px;margin:0 auto;padding:8px 16px calc(80px + env(safe-area-inset-bottom));text-align:center;font-size:.85rem;color:#8a7a60}
 
 .card{background:#fffaf0;border:2px solid var(--line);border-radius:1rem;padding:14px 16px;margin-bottom:14px}
 .card h2{font-size:1.35rem;margin-bottom:.5rem;color:var(--felt)}
