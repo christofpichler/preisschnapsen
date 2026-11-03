@@ -27,23 +27,23 @@ body.dash.idle{cursor:none}
 /* Tables */
 .tgrid{display:grid;height:100%;gap:18px}
 /* Table cards in playing-card style (sizes relative to the card via container units) */
-.card{container-type:size;position:relative;background:radial-gradient(120% 140% at 30% 20%,#fffdf3,#f4e8c8);color:var(--ink);border-radius:2.4cqmin;border:.9cqmin solid #3b2a14;box-shadow:0 6px 0 #0006;overflow:hidden}
-.card:before{content:"";position:absolute;inset:2.6cqmin;border:.45cqmin solid #3b2a1455;border-radius:1.6cqmin;pointer-events:none}
-.card:after{content:"";position:absolute;inset:3.8cqmin;border:.2cqmin solid #3b2a1430;border-radius:1.2cqmin;pointer-events:none}
-.card .cn{position:absolute;width:14cqmin;height:14cqmin;display:flex}
+.card{container-type:size;--u:min(1cqh, calc(1cqw / 1.75));position:relative;background:radial-gradient(120% 140% at 30% 20%,#fffdf3,#f4e8c8);color:var(--ink);border-radius:2.4cqmin;border:.9cqmin solid #3b2a14;box-shadow:0 6px 0 #0006;overflow:hidden}
+.card:before{content:"";position:absolute;inset:calc(2.6 * var(--u));border:calc(.45 * var(--u)) solid #3b2a1455;border-radius:calc(1.6 * var(--u));pointer-events:none}
+.card:after{content:"";position:absolute;inset:calc(3.8 * var(--u));border:calc(.2 * var(--u)) solid #3b2a1430;border-radius:calc(1.2 * var(--u));pointer-events:none}
+.card .cn{position:absolute;width:calc(14 * var(--u));height:calc(14 * var(--u));display:flex}
 .card .cn .ic{width:100%;height:100%}
-.card .cn.tl{left:6cqmin;top:6cqmin}.card .cn.tr{right:6cqmin;top:6cqmin}
-.card .cn.bl{left:6cqmin;bottom:6cqmin;transform:rotate(180deg)}.card .cn.br{right:6cqmin;bottom:6cqmin;transform:rotate(180deg)}
-.card .medal{position:absolute;left:9cqmin;top:50%;transform:translateY(-50%);width:42cqmin;height:42cqmin;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffaf0;border:1.1cqmin double currentColor;box-shadow:inset 0 0 0 .5cqmin #fffaf0,inset 0 0 0 .9cqmin currentColor;font-family:var(--head);line-height:.9;z-index:1}
-.card .medal b{font-size:22cqmin;font-weight:800}
-.card .medal small{font-size:5.4cqmin;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:.6cqmin;opacity:.85}
+.card .cn.tl{left:calc(6 * var(--u));top:calc(6 * var(--u))}.card .cn.tr{right:calc(6 * var(--u));top:calc(6 * var(--u))}
+.card .cn.bl{left:calc(6 * var(--u));bottom:calc(6 * var(--u));transform:rotate(180deg)}.card .cn.br{right:calc(6 * var(--u));bottom:calc(6 * var(--u));transform:rotate(180deg)}
+.card .medal{position:absolute;left:calc(9 * var(--u));top:50%;transform:translateY(-50%);width:calc(42 * var(--u));height:calc(42 * var(--u));border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffaf0;border:calc(1.1 * var(--u)) double currentColor;box-shadow:inset 0 0 0 calc(.5 * var(--u)) #fffaf0,inset 0 0 0 calc(.9 * var(--u)) currentColor;font-family:var(--head);line-height:.9;z-index:1}
+.card .medal b{font-size:calc(22 * var(--u));font-weight:800}
+.card .medal small{font-size:calc(5.4 * var(--u));font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:calc(.6 * var(--u));opacity:.85}
 .card .medal.t-eichel{color:#6a431a}.card .medal.t-gras{color:#2f6e25}.card .medal.t-herz{color:#b3261b}.card .medal.t-schelln{color:#a8730a}
-.card .ci{position:absolute;top:12cqmin;bottom:12cqmin;left:58cqmin;right:10cqmin;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.card .ci{position:absolute;top:calc(12 * var(--u));bottom:calc(12 * var(--u));left:calc(58 * var(--u));right:calc(10 * var(--u));display:flex;flex-direction:column;justify-content:center;min-width:0}
 .card .nmx{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.card .pl{font-weight:700;font-size:calc(15cqmin * var(--s,1));line-height:1.15;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:.3em}
-.card .vs{font-size:5.6cqmin;color:var(--ink-2);line-height:1;padding:.5cqmin 0 .5cqmin .2em;font-family:var(--head);letter-spacing:.06em}
-.card .status{position:absolute;top:7.5cqmin;right:25cqmin;font-weight:700;font-size:5.6cqmin;color:var(--gold-d);text-transform:uppercase;letter-spacing:.08em;background:#fff3cf;border:.35cqmin solid #e0a21b;border-radius:3cqmin;padding:.4cqmin 2cqmin}
-.card.open{border-color:#b98712;box-shadow:0 0 0 .6cqmin #e0a21b66,0 6px 0 #0006}
+.card .pl{font-weight:700;font-size:calc(calc(15 * var(--u)) * var(--s,1));line-height:1.15;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:.3em}
+.card .vs{font-size:calc(5.6 * var(--u));color:var(--ink-2);line-height:1;padding:calc(.5 * var(--u)) 0 calc(.5 * var(--u)) .2em;font-family:var(--head);letter-spacing:.06em}
+.card .status{position:absolute;top:calc(7.5 * var(--u));right:calc(25 * var(--u));font-weight:700;font-size:calc(5.6 * var(--u));color:var(--gold-d);text-transform:uppercase;letter-spacing:.08em;background:#fff3cf;border:calc(.35 * var(--u)) solid #e0a21b;border-radius:calc(3 * var(--u));padding:calc(.4 * var(--u)) calc(2 * var(--u))}
+.card.open{border-color:#b98712;box-shadow:0 0 0 calc(.6 * var(--u)) #e0a21b66,0 6px 0 #0006}
 .card.done{background:radial-gradient(120% 140% at 30% 20%,#f6fbef,#dcebc6)}
 .card.done .pl.lose{color:#8a7a60}
 .card.done .pl.win{color:var(--green-d)}

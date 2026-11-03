@@ -76,7 +76,8 @@
     for (let c = 1; c <= Math.min(T, 12); c++) {
       const rows = Math.ceil(T / c);
       const tw = (W - gap * (c - 1)) / c, th = (H - gap * (rows - 1)) / rows;
-      const sc = Math.min(tw / 1.7, th);
+      // usable size of a card laid out at 1.75:1; portrait cards waste space, so prefer landscape
+      const sc = Math.min(tw / 1.75, th) * (tw >= th ? 1 : 0.85);
       if (sc > bs) { bs = sc; best = c; }
     }
     return best;
