@@ -1,0 +1,46 @@
+@font-face{font-family:"Alegreya SC";font-weight:400;font-display:swap;src:url(../fonts/alegreya-sc-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Alegreya SC";font-weight:700;font-display:swap;src:url(../fonts/alegreya-sc-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Alegreya SC";font-weight:800;font-display:swap;src:url(../fonts/alegreya-sc-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Sans 3";font-weight:400;font-display:swap;src:url(../fonts/source-sans-3-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Sans 3";font-weight:600;font-display:swap;src:url(../fonts/source-sans-3-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Sans 3";font-weight:700;font-display:swap;src:url(../fonts/source-sans-3-latin-700-normal.woff2) format("woff2")}
+
+:root{
+  --felt:#14402c; --felt-2:#0f3322; --felt-3:#1c5a3d; --paper:#f8f0da; --paper-2:#efe2c0; --paper-3:#e3d2a6;
+  --ink:#2a1d10; --ink-2:#5b4630; --red:#c8202f; --red-d:#8f1420; --green:#2f8f3a; --green-d:#1f6a28;
+  --gold:#e0a21b; --gold-d:#a8730a; --brown:#6a431a; --blue:#0b8fd6; --line:#cdb988;
+  --head:"Alegreya SC",Georgia,serif; --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--head);font-weight:700;margin:0}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;flex:none}
+.rauten{background:#fff url(../img/rauten.svg) repeat-x 0 0/24px 24px}
+
+/* Hearts */
+.hearts{display:inline-flex;align-items:center;gap:.08em;white-space:nowrap}
+.hearts .heart{width:1em;height:1em}
+.hearts .heart.lost{color:#8c8068;opacity:.9}
+.hearts .heart.none{color:#8c8068;opacity:.3}
+.hearts .nkgap{width:.3em}
+.hearts .heart.nk.full{filter:drop-shadow(0 0 .08em #ffd36a)}
+
+/* Matrix styled like the paper list */
+.mx{border-collapse:separate;border-spacing:0}
+.mx th,.mx td{padding:.18em .45em;text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line);white-space:nowrap}
+.mx th{background:var(--paper-2);font-family:var(--head);font-weight:700}
+.mx td.nm{text-align:left}
+.mx .num{font-weight:600}
+.sym{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;border-radius:50%;line-height:1;font-weight:700;margin-left:.08em;vertical-align:middle}
+.sym.nk{border:.1em solid var(--red);color:var(--red)}
+.sym.bye{border:.1em solid var(--green);color:var(--green);margin-left:0}
+.c-win{color:var(--green-d)} .c-loss1{color:var(--ink)} .c-open{color:var(--gold-d)}
+.mx tr.out td{background-image:linear-gradient(var(--red),var(--red));background-repeat:no-repeat;background-position:0 50%;background-size:100% .12em}
+.mx tr.out td.nm,.mx tr.out td.nr{color:var(--ink-2)}
+
+.btn{display:inline-block;font:700 1.1rem var(--body);padding:.8rem 1.4rem;border-radius:.7rem;border:2px solid var(--felt);background:var(--felt);color:#fff8e4;text-decoration:none;cursor:pointer}
+.home{min-height:100vh;display:grid;place-items:center;background:var(--felt);padding:16px}
+.home-card{background:var(--paper);border-radius:1.2rem;padding:2rem 2.4rem;text-align:center;border:6px solid var(--paper-3);max-width:420px;width:100%}
+.home-card h1{font-size:2.4rem;margin:.3rem 0 1.2rem}.home-card .btn{width:100%;margin:.3rem 0}
+.home-logo{width:64px;height:64px}

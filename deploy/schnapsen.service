@@ -1,0 +1,35 @@
+[Unit]
+Description=Preisschnapsen tournament manager (dashboard and admin)
+# network-online.target is deliberately not used: it can block for minutes in some LXC containers.
+After=network.target
+
+[Service]
+Type=simple
+User=schnapsen
+Group=schnapsen
+WorkingDirectory=/opt/schnapsen
+EnvironmentFile=/etc/schnapsen/schnapsen.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/schnapsen/venv/bin/python -m app
+Restart=always
+RestartSec=2
+# upper bound for stopping the service (default is 90 s)
+TimeoutStopSec=10
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+ReadWritePaths=/var/lib/schnapsen
+
+[Install]
+WantedBy=multi-user.target

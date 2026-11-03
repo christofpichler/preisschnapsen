@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Schnapsen">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14402c">
+<title>Preisschnapsen – Admin</title>
+<link rel="icon" href="/static/img/favicon.svg">
+<link rel="apple-touch-icon" href="/static/img/favicon.svg">
+<link rel="stylesheet" href="/static/css/app.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="adm">
+<header id="top">
+  <div class="rauten-strip"></div>
+  <div class="top-in">
+    <div class="tname"><span id="a-name">Preisschnapsen</span><span id="a-status" class="pill"></span></div>
+    <div class="top-right"><a class="chip" href="/dashboard/" style="display:inline-flex;align-items:center;text-decoration:none">Dashboard</a><span id="a-sync" class="sync ok" title="Verbindung">&#9679; live</span>
+      <button id="a-undo" class="btn-undo" type="button" data-act="undo" disabled>&#8630; Rückgängig</button></div>
+  </div>
+  <nav id="tabs" role="tablist"></nav>
+</header>
+<main id="view"></main>
+<div id="modal" hidden></div>
+<div id="toast" aria-live="polite"></div>
+<script src="/static/js/suits.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Optional HTTPS reverse proxy (Caddy) in front of Preisschnapsen.
+# Needed only if the app is reachable from the internet.
+# In that case also set SCHNAPSEN_HOST=127.0.0.1 in /etc/schnapsen/schnapsen.env
+# so the app itself is no longer reachable directly over plain HTTP.
+
+schnapsen.example.org {
+	encode gzip
+
+	# For a LAN without a public DNS name use instead:
+	#   tls internal
+	# (Caddy then creates its own local CA; install its certificate on the client devices.)
+
+	reverse_proxy 127.0.0.1:8080 {
+		# forward Server-Sent Events immediately
+		flush_interval -1
+		header_up Host {host}
+	}
+}
