@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import os
+import re
 import time
 from collections import OrderedDict
 from typing import Any, Callable, Dict, Optional
@@ -19,6 +21,29 @@ from .config import Config
 from .service import ApiError, Service
 
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+_ASSET_RE = re.compile(r'((?:href|src)=")(/static/[^"?#]+)(")')
+
+
+def asset_version(static_dir: str = STATIC_DIR) -> str:
+    """Short content hash over all static files; changes with every release."""
+    h = hashlib.sha256()
+    for root, dirs, files in os.walk(static_dir):
+        dirs.sort()
+        for name in sorted(files):
+            path = os.path.join(root, name)
+            h.update(os.path.relpath(path, static_dir).encode())
+            with open(path, "rb") as fh:
+                h.update(fh.read())
+    return h.hexdigest()[:12]
+
+
+def versioned_page(name: str, version: str) -> str:
+    """HTML page with ?v=<version> appended to every /static/ asset URL, so browsers
+    and caching proxies (e.g. Cloudflare) fetch new CSS/JS after an update."""
+    with open(os.path.join(STATIC_DIR, name), encoding="utf-8") as fh:
+        html = fh.read()
+    return _ASSET_RE.sub(lambda mo: f"{mo.group(1)}{mo.group(2)}?v={version}{mo.group(3)}", html)
 IDEM_TTL = 600
 
 NO_ACCESS_HTML = """<!doctype html><html lang="de"><head><meta charset="utf-8">
@@ -36,6 +61,9 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
     app = FastAPI(title="Preisschnapsen", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.service = svc
     app.state.config = cfg
+    version = asset_version()
+    pages = {n: versioned_page(n, version) for n in ("dashboard.html", "admin.html")}
+    app.state.asset_version = version
     idem: "OrderedDict[str, Any]" = OrderedDict()
 
     # ---------------------------------------------------------------- Auth
@@ -88,6 +116,11 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
         resp.headers.setdefault("Referrer-Policy", "same-origin")
         if not request.url.path.startswith("/static/"):
             resp.headers["Cache-Control"] = "no-store"
+        elif request.query_params.get("v"):
+            # versioned URL: content never changes under this URL
+            resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        else:
+            resp.headers["Cache-Control"] = "no-cache"
         return resp
 
     # ---------------------------------------------------------------- idempotency
@@ -142,8 +175,8 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
         return RedirectResponse(request.url.path + "/", status_code=307)
 
     @app.get("/dashboard/")
-    def dash_page(_: str = Depends(need_user)) -> FileResponse:
-        return FileResponse(os.path.join(STATIC_DIR, "dashboard.html"))
+    def dash_page(_: str = Depends(need_user)) -> HTMLResponse:
+        return HTMLResponse(pages["dashboard.html"])
 
     @app.get("/dashboard/api/state")
     def dash_state(role: str = Depends(need_user)) -> JSONResponse:
@@ -154,8 +187,8 @@ def create_app(cfg: Optional[Config] = None) -> FastAPI:
         return await sse(request, bool(once))
 
     @app.get("/admin/")
-    def admin_page(_: str = Depends(need_admin)) -> FileResponse:
-        return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+    def admin_page(_: str = Depends(need_admin)) -> HTMLResponse:
+        return HTMLResponse(pages["admin.html"])
 
     @app.get("/admin/api/state")
     def admin_state(_: str = Depends(need_admin)) -> JSONResponse:

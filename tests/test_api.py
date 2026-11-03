@@ -263,3 +263,14 @@ def test_remove_all_players(client):
     h = dict(DASH)
     h.update({"Content-Type": "application/json", "X-Schnapsen": "1"})
     assert client.post("/admin/api/players/remove-all", content=json.dumps({"confirm": True}), headers=h).status_code == 403
+
+
+def test_pages_reference_versioned_assets(client):
+    html = client.get("/dashboard/", headers=DASH).text
+    assert '/static/css/dashboard.css?v=' in html and '/static/js/suits.js?v=' in html
+    assert "/static/js/admin.js?v=" in client.get("/admin/", headers=ADMIN).text
+    v = html.split('/static/css/app.css?v=')[1].split('"')[0]
+    r = client.get("/static/css/app.css?v=" + v)
+    assert r.status_code == 200 and "immutable" in r.headers["cache-control"]
+    assert client.get("/static/css/app.css").headers["cache-control"] == "no-cache"
+    assert client.get("/dashboard/", headers=DASH).headers["cache-control"] == "no-store"
