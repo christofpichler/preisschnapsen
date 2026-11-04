@@ -287,7 +287,7 @@
   }
   function drawPanel() {
     const di = D.draw_info;
-    let h = '<div class="card"><div class="row sp"><h2>Runde ' + D.next_round + ' auslosen</h2><div class="row"><button class="chip ' + (ui.mode === 'digital' ? 'on' : '') + '" data-act="d-mode" data-m="digital">Digital</button><button class="chip ' + (ui.mode === 'manual' ? 'on' : '') + '" data-act="d-mode" data-m="manual">Manuell (Zettel-Topf)</button></div></div>';
+    let h = '<div class="card"><div class="row sp"><h2>Runde ' + D.next_round + ' auslosen</h2><div class="row"><button class="chip ' + (ui.mode === 'digital' ? 'on' : '') + '" data-act="d-mode" data-m="digital">Auto</button><button class="chip ' + (ui.mode === 'manual' ? 'on' : '') + '" data-act="d-mode" data-m="manual">Manuell</button></div></div>';
     if (di) h += '<div class="banner">' + ic('eichel') + ' ' + esc(di.text) + '</div>';
     if (ui.mode === 'digital') {
       h += '<button class="btn big" data-act="d-draw">Runde ' + D.next_round + ' auslosen</button><p class="muted small">Zufällige Auslosung (kryptografisch). Das Ergebnis ist zunächst ein Entwurf und erscheint erst nach „Veröffentlichen“ auf dem Dashboard.</p></div>';

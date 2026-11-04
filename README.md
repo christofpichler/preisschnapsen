@@ -1,6 +1,6 @@
 # Preisschnapsen
 
-A web app for running a **Schnapsen** card tournament (Preisschnapsen) with the traditional Bavarian deck. It replaces the paper list: players are registered, every round is drawn, results are entered, and a live dashboard shows tables, lives, standings and the award ceremony.
+A web app for running a **Schnapsen** card tournament (Preisschnapsen) with German-suited cards (Eichel, Laub, Herz, Schelln). It replaces the paper list: players are registered, every round is drawn, results are entered, and a live dashboard shows tables, lives, standings and the award ceremony.
 
 Schnapsen is a two-player trick-taking card game. A few German terms are used throughout the app and this document:
 
@@ -14,8 +14,8 @@ The user interface is in German. The code, the command line and this documentati
 
 ## Features
 
-* Admin area for touch devices and desktops: quick player entry, digital or manual draw (real pot of paper tickets), one-tap result entry, rebuy dialog, corrections of past rounds with warnings, placement games, cash overview, tournament reset and removal of all players, undo, CSV export, print view (A4 landscape), JSON backup and import.
-* Live dashboard for a large display: draw animation with four illustrated cards (one per suit and season), tables of the current round, players with lives as hearts, a matrix like the paper list, ranking, optional cash view and award ceremony. Views rotate automatically or can be pinned.
+* Admin area for touch devices and desktops: quick player entry, automatic draw (**Auto**) or manual draw from a real pot of paper tickets (**Manuell**), one-tap result entry, rebuy dialog, corrections of past rounds with warnings, placement games, cash overview, tournament reset and removal of all players, undo, CSV export, print view (A4 landscape), JSON backup and import, and a button that replays the draw animation on all dashboards.
+* Live dashboard for a large display: draw animation that deals four random cards from a pool of historic card scans (face down, then flipped), tables of the current round as playing cards, players with remaining lives as red hearts and bummerls as black dots, a matrix like the paper list, ranking, optional cash view and award ceremony. Views rotate automatically or can be pinned.
 * Live updates via Server-Sent Events with polling fallback and automatic reconnect. Several admin devices stay in sync.
 * Derived state: lives, status and ranking are never stored as counters but always recomputed from results and rebuys, so corrections of old rounds stay consistent.
 * Idempotent write requests (`X-Request-Id`), serialised writes, SQLite in WAL mode, automatic database backup after every closed round, 50 undo steps.
@@ -32,6 +32,10 @@ The user interface is in German. The code, the command line and this documentati
 |---|---|
 | ![Matrix](docs/screenshots/dashboard-matrix.png) | ![Ceremony](docs/screenshots/dashboard-ceremony.png) |
 
+| Dashboard: draw animation |
+|---|
+| ![Draw animation](docs/screenshots/dashboard-draw.jpg) |
+
 | Admin: round | Admin: players |
 |---|---|
 | ![Admin round](docs/screenshots/admin-round.png) | ![Admin players](docs/screenshots/admin-players.png) |
@@ -45,7 +49,7 @@ The screenshots show the demo tournament (`schnapsen demo`, fictional names).
 3. Each table has two players and exactly one winner. The loser gets a bummerl.
 4. All players still in the game are drawn anew for every round, winners and surviving losers alike. A new round can only be drawn when the previous round is closed and all rebuy decisions are made.
 5. Draw: tables `1..N` (N = active players / 2, rounded down). Every table number goes into the pot twice, one ticket per player. With an odd number of players one additional bye ticket (`F`) is added. Example: 19 players give tickets 1-9 twice plus one `F`.
-6. The digital draw uses `secrets.SystemRandom`. By default it avoids repeating the pairing of the previous round and giving the same player two byes in a row (up to 300 shuffles, the variant with the fewest violations wins). Both options can be switched off. In manual mode the admin enters the ticket each player drew; the app validates that every number appears exactly twice and `F` exactly once (odd count) or never (even count).
+6. The automatic draw (**Auto**) uses `secrets.SystemRandom`. By default it avoids repeating the pairing of the previous round and giving the same player two byes in a row (up to 300 shuffles, the variant with the fewest violations wins). Both options can be switched off. In manual mode (**Manuell**) the admin enters the ticket each player drew; the app validates that every number appears exactly twice and `F` exactly once (odd count) or never (even count).
 7. A draw is a draft until it is published. Only published rounds appear on the dashboard.
 8. The tournament ends when only one player is left after a round and all rebuy decisions are made. In the final the loser keeps playing as long as he or she has lives left.
 9. Ranking: players eliminated later rank higher. Players eliminated in the same round share a place range. Inside the prize ranks the order is decided by a placement game: for two players the admin taps the winner, for larger groups the order is set with arrow buttons. The audit log records e.g. "Platzierungsspiel Pl. 4/5: A schlägt B".
@@ -117,10 +121,10 @@ The whole site (except `/static/`) uses one HTTP Basic Auth realm, `Preisschnaps
 | `user` | `SCHNAPSEN_DASHBOARD_*` | dashboard only |
 
 * A `user` requesting `/admin/` or `/admin/api/...` gets `403` (not `401`, which would cause a login loop).
-* The dashboard shows a small "Admin-Panel" button only to admins; it fades out with the mouse cursor.
+* The dashboard header shows an "Admin-Panel" button only to admins; the admin area links back to the dashboard.
 * The role is reported as `role` in the state API.
 * Change a password: `schnapsen-passwd admin` or `schnapsen-passwd user` (alias `dashboard`). The hash is written to the env file and the service is restarted. Change the user name too with `schnapsen-passwd user --user NAME`.
-* Basic Auth has no logout. The browser keeps the credentials until it is closed; to switch accounts, use a private window or clear the site's credentials.
+* Basic Auth has no logout. The browser keeps the credentials until it is quit; to switch accounts, use a private window, delete the saved credentials, or open `https://logout:x@<host>/` once to make the browser ask again.
 * Successful authentications are cached in memory for five minutes (key: SHA-256 of the `Authorization` header).
 * Write requests require `Content-Type: application/json` and the header `X-Schnapsen: 1`; `Origin`/`Referer` are checked against the host when present.
 * The `user` role gets a reduced view: no notes, audit log or payment status; cash totals only if enabled in the admin area.
@@ -202,7 +206,7 @@ app/exports.py     CSV export and print view
 app/cli.py         command line interface
 app/simtools.py    demo and simulation helpers
 app/static/        HTML, CSS, JS, fonts, SVG
-tools/             make_suits.py (sprite generator), make_cards.py (card artwork for the draw animation)
+tools/             make_suits.py (sprite generator), make_cards.py (drawn fallback cards and card back), prepare_cards.py (card scans)
 tests/             pytest suite
 deploy/            systemd unit, Caddyfile example
 docs/screenshots/  images used by this README
@@ -222,7 +226,7 @@ install.sh         installer / updater
 
 ## Card images
 
-The draw animation deals four random cards from `app/static/img/cards/`. The bundled images are scans of a late 19th century Doppeldeutsche (Tell pattern) pack by Ferd. Piatnik & Söhne, Vienna, with the Austro-Hungarian card tax stamp; the artwork is in the public domain. Scans courtesy of the playing card collection at [endebrock.de](http://www.endebrock.de/).
+When a draw is published (or the admin presses "Animation"), every dashboard plays a short animation that deals four random cards from `app/static/img/cards/` face down and flips them; afterwards the tables are shown. The animation can be switched off in the admin area. The bundled images are scans of a late 19th century Doppeldeutsche (Tell pattern) pack by Ferd. Piatnik & Söhne, Vienna, with the Austro-Hungarian card tax stamp; the artwork is in the public domain. Scans courtesy of the playing card collection at [endebrock.de](http://www.endebrock.de/).
 
 To add cards, put scans through `tools/prepare_cards.py` (neutralises the paper tone, crops strips of several cards with `--strip N --names ...`, scales and compresses). Every JPEG/PNG/WebP in the folder is picked up at server start. Without images the animation uses the drawn cards from `tools/make_cards.py`.
 

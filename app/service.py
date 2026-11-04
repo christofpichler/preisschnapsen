@@ -564,7 +564,7 @@ class Service:
             assign, viol = drawmod.draw(d["draw_ids"], pp, pb, opt["avoid_repeat"], opt["avoid_bye_repeat"])
             self._make_draft(tid, assign, d["draw_ids"], "digital", d)
             info["violations"] = viol
-            self._log(tid, f"Runde {d['next_round']} ausgelost (digital, Entwurf" + (", neu" if had else "") + ")")
+            self._log(tid, f"Runde {d['next_round']} ausgelost (Auto, Entwurf" + (", neu" if had else "") + ")")
 
         self._mut("Auslosung", fn)
         return info
